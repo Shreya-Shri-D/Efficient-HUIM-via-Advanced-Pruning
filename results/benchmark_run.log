@@ -1,0 +1,6 @@
+loading /Users/shreyashridevarajan/Documents/DM Package/datasets/accidents.txt ...
+  accidents hui-pr δ=0.131 | HUI=164 cand=1303 time=127.302s
+  accidents hui-pr-star δ=0.131 | HUI=164 cand=1301 time=187.818s
+  accidents hui-pr δ=0.1325 | HUI=144 cand=1199 time=130.534s
+  accidents hui-pr-star δ=0.1325 | HUI=144 cand=1196 time=182.734s
+  accidents hui-pr δ=0.134 | HUI=109 cand=1079 time=121.092s

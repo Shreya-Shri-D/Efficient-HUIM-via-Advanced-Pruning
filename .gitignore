@@ -1,0 +1,15 @@
+# Local paper copy (use DOI / publisher link instead)
+3363571.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# OS / editor
+.DS_Store

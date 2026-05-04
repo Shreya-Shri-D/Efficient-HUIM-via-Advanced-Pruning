@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HUI-PR benchmark · summary</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c1222;
+      --card: #141c2f;
+      --line: #2a3650;
+      --text: #eef2f8;
+      --muted: #8b9bb8;
+      --pr: #38bdf8;
+      --star: #e879f9;
+      --accent: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: radial-gradient(ellipse 100% 60% at 50% -20%, rgba(56, 189, 248, 0.14), transparent);
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+    header { margin-bottom: 2rem; }
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.35rem;
+    }
+    .lead { color: var(--muted); font-size: 1rem; line-height: 1.55; max-width: 36rem; margin: 0; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin: 2rem 0;
+    }
+    @media (min-width: 640px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+    }
+    .kpi .n { font-size: 1.5rem; font-weight: 700; color: var(--pr); letter-spacing: -0.02em; }
+    .kpi .lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-top: 0.4rem; }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.25rem 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    section h2 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+    .chart-wrap { position: relative; height: 280px; }
+    .chart-wrap.tall { height: 300px; }
+    .split { display: grid; gap: 1rem; }
+    @media (min-width: 720px) { .split { grid-template-columns: 1.4fr 1fr; } }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; line-height: 1.45; }
+    footer { margin-top: 2rem; font-size: 0.75rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>High-utility mining benchmark</h1>
+      <p class="lead">HUI-PR vs HUI-PR* on TKDD-style runs. Averages are taken over every threshold δ in your results file for each dataset.</p>
+    </header>
+    <div class="kpis" id="kpis"></div>
+    <section>
+      <h2>Average runtime by dataset</h2>
+      <div class="chart-wrap tall"><canvas id="c1"></canvas></div>
+      <p class="note">Lower is faster. Comparing the two pruning strategies at the same δ grid.</p>
+    </section>
+    <section>
+      <h2>Mean runtime ratio (HUI-PR* ÷ HUI-PR)</h2>
+      <div class="chart-wrap"><canvas id="c2"></canvas></div>
+      <p class="note">Above 1: HUI-PR* slower on matched δ. Green: faster or equal.</p>
+    </section>
+    <section>
+      <h2>Runtime vs δ</h2>
+      <div class="split">
+        <div class="chart-wrap tall"><canvas id="c3"></canvas></div>
+        <div class="chart-wrap tall"><canvas id="c4"></canvas></div>
+      </div>
+      <p class="note">Left: Table-7-style grids · Right: accidents (your custom δ). Solid = HUI-PR, dashed = HUI-PR*.</p>
+    </section>
+    <footer>Source: paper_table7_merged.csv · Chart.js</footer>
+  </div>
+  <script>
+    const DATA = {"datasets":["accidents","chess","connect","foodmart","mushroom","retail"],"pr_means":[182.0502290205,3.258646833599998,5.6453646584,2.3938907251999924,0.40986032519999893,4.162326250200001],"star_means":[388.12404268800003,5.789955516399999,7.495234766599999,2.4018212833999995,0.5381036165999973,4.109576483199993],"time_ratios":[2.2033913540930206,1.7798394740867374,1.3278233739673944,1.0035070105283894,1.313079215762482,0.9731780553846855],"lines_main":{"chess":{"d_pr":[0.25,0.255,0.26,0.265,0.27],"t_pr":[3.8488755,3.488609875,3.191366291999998,2.9619816669999963,2.8024008339999966],"d_st":[0.25,0.255,0.26,0.265,0.27],"t_st":[6.605941250000001,6.148834083000001,5.889250915999998,5.332644125000002,4.973107207999995]},"connect":{"d_pr":[0.289,0.291,0.293,0.295,0.297],"t_pr":[5.973548624999999,5.829464791999996,5.637242874999998,5.46945375,5.317113250000006],"d_st":[0.289,0.291,0.293,0.295,0.297],"t_st":[7.905869708000004,7.638697249999993,7.652558749999997,7.199152333000001,7.079895792000002]},"foodmart":{"d_pr":[0.0011,0.0012,0.0013,0.0014,0.0015],"t_pr":[2.4631767500000024,2.435337249999975,2.410902458999999,2.358282124999988,2.3017550419999964],"d_st":[0.0011,0.0012,0.0013,0.0014,0.0015],"t_st":[2.435157624999988,2.428698459000003,2.4337256670000045,2.377409916000005,2.3341147499999977]},"mushroom":{"d_pr":[0.14,0.1425,0.145,0.1475,0.15],"t_pr":[0.4175444999999982,0.42336083400000035,0.41507649999999785,0.39557129199999963,0.39774849999999873],"d_st":[0.14,0.1425,0.145,0.1475,0.15],"t_st":[0.5536109580000002,0.5508322079999957,0.5381852919999943,0.5263041249999958,0.5215855000000005]},"retail":{"d_pr":[0.003,0.004,0.005,0.006,0.007],"t_pr":[9.421721000000005,4.376955124999995,3.1409501669999997,2.0711873750000223,1.8008175839999865],"d_st":[0.003,0.004,0.005,0.006,0.007],"t_st":[9.548522665999997,4.332586207999981,2.923900792000012,2.0245673749999753,1.718305375]}},"lines_accidents":{"accidents":{"d_pr":[0.13,0.17],"t_pr":[165.541377541,198.55908050000005],"d_st":[0.13,0.17],"t_st":[495.14773495900005,281.1003504170001]}},"kpis":{"datasets":6,"runs":54,"total_hui":172484,"total_wall_s":1321.372445711}};
+    const prColor = 'rgba(56, 189, 248, 0.9)';
+    const starColor = 'rgba(232, 121, 249, 0.9)';
+    const grid = 'rgba(139, 155, 184, 0.25)';
+    const text = '#eef2f8';
+    const muted = '#8b9bb8';
+
+    const kpis = document.getElementById('kpis');
+    const k = DATA.kpis;
+    const fmt = (n) => n >= 1e6 ? (n/1e6).toFixed(2) + 'M' : n >= 1e3 ? (n/1e3).toFixed(1) + 'k' : n.toLocaleString();
+    kpis.innerHTML = [
+      { n: k.datasets, l: 'Datasets' },
+      { n: k.runs, l: 'Total runs' },
+      { n: fmt(k.total_hui), l: 'HUIs (sum)' },
+      { n: k.total_wall_s.toFixed(0) + ' s', l: 'Wall time (sum)' },
+    ].map(x => `<div class="kpi"><div class="n">${x.n}</div><div class="lbl">${x.l}</div></div>`).join('');
+
+    new Chart(document.getElementById('c1'), {
+      type: 'bar',
+      data: {
+        labels: DATA.datasets,
+        datasets: [
+          { label: 'HUI-PR', data: DATA.pr_means, backgroundColor: prColor, borderRadius: 6, borderSkipped: false },
+          { label: 'HUI-PR*', data: DATA.star_means, backgroundColor: starColor, borderRadius: 6, borderSkipped: false },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: text }, position: 'top' },
+        },
+        scales: {
+          x: {
+            grid: { color: grid },
+            ticks: { color: muted, maxRotation: 45 },
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Seconds (mean)', color: muted },
+            grid: { color: grid },
+            ticks: { color: muted },
+          },
+        },
+      },
+    });
+
+    const ratioLabels = [];
+    const ratioVals = [];
+    DATA.datasets.forEach((ds, i) => {
+      const v = DATA.time_ratios[i];
+      if (v != null) { ratioLabels.push(ds); ratioVals.push(v); }
+    });
+    new Chart(document.getElementById('c2'), {
+      type: 'bar',
+      data: {
+        labels: ratioLabels,
+        datasets: [{
+          label: 'HUI-PR* / HUI-PR',
+          data: ratioVals,
+          backgroundColor: ratioVals.map(v => v > 1 ? 'rgba(251, 191, 36, 0.75)' : 'rgba(52, 211, 153, 0.65)'),
+          borderRadius: 6,
+          borderSkipped: false,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            grid: { color: grid },
+            ticks: { color: muted },
+            title: { display: true, text: 'Ratio', color: muted },
+          },
+          y: {
+            grid: { color: grid },
+            ticks: { color: muted },
+          },
+        },
+      },
+    });
+
+    function lineDatasets(linesObj) {
+      const out = [];
+      const palette = ['#38bdf8', '#fbbf24', '#34d399', '#fb7185', '#a78bfa', '#e879f9'];
+      let pi = 0;
+      for (const ds of Object.keys(linesObj).sort()) {
+        const L = linesObj[ds];
+        const c = palette[pi++ % palette.length];
+        out.push({
+          label: ds + ' · PR',
+          data: L.d_pr.map((d, i) => ({ x: d, y: L.t_pr[i] })),
+          borderColor: c,
+          backgroundColor: c,
+          tension: 0.25,
+          pointRadius: 3,
+          borderWidth: 2.5,
+        });
+        out.push({
+          label: ds + ' · PR*',
+          data: L.d_st.map((d, i) => ({ x: d, y: L.t_st[i] })),
+          borderColor: c,
+          borderDash: [7, 5],
+          tension: 0.25,
+          pointRadius: 2,
+          borderWidth: 2,
+        });
+      }
+      return out;
+    }
+
+    const lineOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: text, boxWidth: 10, font: { size: 10 } },
+          position: 'bottom',
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'δ', color: muted },
+          grid: { color: grid },
+          ticks: { color: muted },
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Seconds', color: muted },
+          grid: { color: grid },
+          ticks: { color: muted },
+        },
+      },
+    };
+
+    new Chart(document.getElementById('c3'), {
+      type: 'line',
+      data: { datasets: lineDatasets(DATA.lines_main) },
+      options: lineOpts,
+    });
+    new Chart(document.getElementById('c4'), {
+      type: 'line',
+      data: { datasets: lineDatasets(DATA.lines_accidents) },
+      options: lineOpts,
+    });
+  </script>
+</body>
+</html>
