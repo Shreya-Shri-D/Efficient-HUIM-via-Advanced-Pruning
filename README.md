@@ -1,6 +1,6 @@
 # Efficient HUIM via Advanced Pruning
 
-A compact, research-grade Python implementation of **HUI-PR** algorithm for **high-utility itemset mining** with a **minimum utility threshold expressed as a ratio** of total database utility. The implementation focuses on **strong upper-bound pruning** (local, strict local, and strict subtree utilities), **transaction merging** on projected databases, and **optional parallel preprocessing** for scalable runs on dense transactional data.
+A compact Python implementation of **HUI-PR** algorithm for **high-utility itemset mining** with a **minimum utility threshold expressed as a ratio** of total database utility. The implementation focuses on **strong upper-bound pruning** (local, strict local, and strict subtree utilities), **transaction merging** on projected databases, and **optional parallel preprocessing** for scalable runs on dense transactional data.
 
 This codebase accompanies experiments on classic quantitative datasets and reproduces the experimental setup aligned with *Wu, Lin, and Tamrakar, ACM TKDD 2019* ([DOI: 10.1145/3363571](https://doi.org/10.1145/3363571)).
 
