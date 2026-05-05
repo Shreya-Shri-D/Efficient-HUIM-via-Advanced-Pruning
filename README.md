@@ -2,8 +2,6 @@
 
 A compact Python implementation of **HUI-PR** algorithm for **high-utility itemset mining** with a **minimum utility threshold expressed as a ratio** of total database utility. The implementation focuses on **strong upper-bound pruning** (local, strict local, and strict subtree utilities), **transaction merging** on projected databases, and **optional parallel preprocessing** for scalable runs on dense transactional data.
 
-This codebase accompanies experiments on classic quantitative datasets and reproduces the experimental setup aligned with *Wu, Lin, and Tamrakar, ACM TKDD 2019* ([DOI: 10.1145/3363571](https://doi.org/10.1145/3363571)).
-
 ---
 
 ## Why this project
@@ -119,14 +117,6 @@ python -m pytest tests/ -q
 ## Results and reproducibility
 
 The `results/` directory contains merged CSVs, run logs, and HTML visualizations produced from paper-style experiments. Regenerate or update them with the scripts under `scripts/` as needed.
-
----
-
-## Citation
-
-The algorithms implemented here follow *Efficient algorithms for mining high-utility itemsets with strong average utility pruning* (Wu, Lin, Tamrakar, **ACM TKDD**, 2019). Please cite that work when referencing HUI-PR / HUI-PR* in publications:
-
-**DOI:** [10.1145/3363571](https://doi.org/10.1145/3363571)
 
 ---
 
